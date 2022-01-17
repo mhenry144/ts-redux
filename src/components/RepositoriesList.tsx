@@ -7,7 +7,7 @@ const RepositoriesList: React.FC = () => {
   // use local state to track user input
   const [term, setTerm] = useState("");
   const { searchRepositories } = useActions();
-  // useSelector doesnt know 'type' :
+  // useSelector doesnt know 'type' ---- solution: create useTypedSelector hook and replace
   const { data, error, loading } = useTypedSelector(
     (state) => state.repositories
   );
@@ -28,7 +28,7 @@ const RepositoriesList: React.FC = () => {
       </form>
       {error && <h3>{error}</h3>}
       {loading && <h3>Loading...</h3>}
-      {!error && !loading && data}
+      {!error && !loading && data.map((name) => <div key={name}>{name}</div>)}
     </div>
   );
 };
