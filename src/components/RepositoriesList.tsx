@@ -1,17 +1,23 @@
 import { useState } from "react";
+import { useTypedSelector } from "../hooks/useTypedSelector";
 // hook from react-redux to manually dispatch function directly inside for an action creator
-import { useDispatch } from "react-redux";
-import { actionCreators } from "../state";
+import { useActions } from "../hooks/useActions";
 
 const RepositoriesList: React.FC = () => {
   // use local state to track user input
   const [term, setTerm] = useState("");
-  const dispatch = useDispatch();
+  const { searchRepositories } = useActions();
+  // useSelector doesnt know 'type' :
+  const { data, error, loading } = useTypedSelector(
+    (state) => state.repositories
+  );
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // prevent page from reloading when form is submitted
     event.preventDefault();
 
-    dispatch(actionCreators.searchRepositories(term));
+    //dispatch(actionCreators.searchRepositories(term));
+    searchRepositories(term);
   };
 
   return (
@@ -20,6 +26,9 @@ const RepositoriesList: React.FC = () => {
         <input value={term} onChange={(e) => setTerm(e.target.value)} />
         <button>Search</button>
       </form>
+      {error && <h3>{error}</h3>}
+      {loading && <h3>Loading...</h3>}
+      {!error && !loading && data}
     </div>
   );
 };
